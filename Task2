@@ -1,0 +1,72 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+class OnlineVotingSystem {
+    private Map<String, Integer> candidates;
+
+    public OnlineVotingSystem() {
+        this.candidates = new HashMap<>();
+    }
+
+    public void addCandidate(String name) {
+        candidates.put(name, 0);
+    }
+
+    public void vote(String candidateName) {
+        if (candidates.containsKey(candidateName)) {
+            candidates.put(candidateName, candidates.get(candidateName) + 1);
+            System.out.println("Vote for " + candidateName + " recorded successfully!");
+        } else {
+            System.out.println("Invalid candidate. Please choose a valid candidate.");
+        }
+    }
+
+    public void displayResults() {
+        System.out.println("Voting Results:");
+        for (Map.Entry<String, Integer> entry : candidates.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue() + " votes");
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        OnlineVotingSystem votingSystem = new OnlineVotingSystem();
+
+        // Adding candidates
+        votingSystem.addCandidate("siddu");
+        votingSystem.addCandidate("kumar");
+        votingSystem.addCandidate("harry");
+
+        while (true) {
+            System.out.println("1. Vote");
+            System.out.println("2. Display Results");
+            System.out.println("3. Exit");
+            System.out.print("Choose an option: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter the name of the candidate you want to vote for: ");
+                    String candidateName = scanner.nextLine();
+                    votingSystem.vote(candidateName);
+                    break;
+
+                case 2:
+                    votingSystem.displayResults();
+                    break;
+
+                case 3:
+                    System.out.println("Exiting the voting system. Thank you!");
+                    System.exit(0);
+
+                default:
+                    System.out.println("Invalid choice. Please enter a valid option.");
+            }
+        }
+    }
+}
