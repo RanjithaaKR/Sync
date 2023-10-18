@@ -1,0 +1,66 @@
+import java.io.*;
+import java.util.*;
+
+class AttendanceSystem {
+    private static final String FILE_PATH = "attendance.txt";
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        while (true) {
+            System.out.println("Attendance Monitoring System");
+            System.out.println("1. Mark Attendance");
+            System.out.println("2. View Attendance");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    markAttendance();
+                    break;
+                case 2:
+                    viewAttendance();
+                    break;
+                case 3:
+                    System.out.println("Exiting...");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    private static void markAttendance() {
+        System.out.print("Enter student ID: ");
+        int studentId = scanner.nextInt();
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH, true))) {
+            Date date = new Date();
+            writer.println(studentId + "," + date);
+            System.out.println("Attendance marked successfully for student ID " + studentId);
+        } catch (IOException e) {
+            System.out.println("Error marking attendance: " + e.getMessage());
+        }
+    }
+
+    private static void viewAttendance() {
+        System.out.print("Enter student ID: ");
+        int studentId = scanner.nextInt();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+            System.out.println("Attendance for student ID " + studentId + ":");
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                int id = Integer.parseInt(parts[0]);
+                if (id == studentId) {
+                    System.out.println(parts[1]);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error viewing attendance: " + e.getMessage());
+        }
+    }
+}
