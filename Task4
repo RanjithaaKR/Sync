@@ -1,0 +1,118 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+class TrainTicket {
+    private String source;
+    private String destination;
+    private int numberOfTickets;
+
+    public TrainTicket(String source, String destination, int numberOfTickets) {
+        this.source = source;
+        this.destination = destination;
+        this.numberOfTickets = numberOfTickets;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public int getNumberOfTickets() {
+        return numberOfTickets;
+    }
+}
+
+class TicketBookingSystem {
+    private Map<String, TrainTicket> availableTickets;
+    private Map<String, Integer> userTickets;
+
+    public TicketBookingSystem() {
+        availableTickets = new HashMap<>();
+        availableTickets.put("Hampi Express", new TrainTicket("Station A", "Station B", 50));
+        availableTickets.put("Shatabdi Express", new TrainTicket("Station C", "Station D", 30));
+
+        userTickets = new HashMap<>();
+    }
+
+    public void displayAvailableTickets() {
+        System.out.println("Available Tickets:");
+        for (Map.Entry<String, TrainTicket> entry : availableTickets.entrySet()) {
+            TrainTicket ticket = entry.getValue();
+            System.out.println(entry.getKey() + ": " + ticket.getSource() + " to " + ticket.getDestination() +
+                    " (" + ticket.getNumberOfTickets() + " available)");
+        }
+    }
+
+    public void bookTicket(String trainNumber, int numberOfTickets) {
+        if (availableTickets.containsKey(trainNumber)) {
+            TrainTicket ticket = availableTickets.get(trainNumber);
+
+            if (ticket.getNumberOfTickets() >= numberOfTickets) {
+                availableTickets.get(trainNumber).numberOfTickets -= numberOfTickets;
+
+                // Record the user's booking
+                String key = trainNumber + "-" + numberOfTickets;
+                userTickets.put(key, userTickets.getOrDefault(key, 0) + numberOfTickets);
+
+                System.out.println("Booking successful!");
+            } else {
+                System.out.println("Not enough tickets available for the selected train.");
+            }
+        } else {
+            System.out.println("Invalid train number.");
+        }
+    }
+
+    public void displayUserTickets() {
+        System.out.println("Your Tickets:");
+        for (Map.Entry<String, Integer> entry : userTickets.entrySet()) {
+            String[] parts = entry.getKey().split("-");
+            String trainNumber = parts[0];
+            int numberOfTickets = Integer.parseInt(parts[1]);
+            System.out.println(trainNumber + ": " + numberOfTickets + " tickets");
+        }
+    }
+}
+
+public class OnlineTrainTicketingSystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        TicketBookingSystem bookingSystem = new TicketBookingSystem();
+
+        while (true) {
+            System.out.println("Choose an option:");
+            System.out.println("1. Display Available Tickets");
+            System.out.println("2. Book a Ticket");
+            System.out.println("3. Display Your Tickets");
+            System.out.println("4. Exit");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            switch (choice) {
+                case 1:
+                    bookingSystem.displayAvailableTickets();
+                    break;
+                case 2:
+                    System.out.println("Enter the train number:");
+                    String trainNumber = scanner.nextLine();
+                    System.out.println("Enter the number of tickets:");
+                    int numberOfTickets = scanner.nextInt();
+                    bookingSystem.bookTicket(trainNumber, numberOfTickets);
+                    break;
+                case 3:
+                    bookingSystem.displayUserTickets();
+                    break;
+                case 4:
+                    System.out.println("Exiting the ticketing system. Thank you!");
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
